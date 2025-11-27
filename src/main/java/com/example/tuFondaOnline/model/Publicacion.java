@@ -25,17 +25,14 @@ public class Publicacion {
     private Long idPublicacion;
     @Column(nullable=false, length=100)
     private String titulo;
-    @Column(nullable=false, length=500)
+    @Column(nullable=false, length=700)
     private String bajada;
     @Column(nullable=false, length=100)
     private String detalle;
     @Column(nullable=false, length=100)
     private String imagen;
-    @Column(nullable=false, length=500)
+    @Column(nullable=false, length=700)
     private String contenido;
     @Column(nullable=false)
-    private Date fecha;
-
-    //Faltan las relaciones
-    
+    private Date fecha;    
 }

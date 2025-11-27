@@ -23,6 +23,4 @@ public class Categoria {
     private Long idCategoria;
     @Column(nullable=false, length=50)
     private String nombre;
-
-    //Faltan las relaciones
 }
