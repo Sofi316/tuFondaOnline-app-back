@@ -34,7 +34,7 @@ public class Publicacion {
     @Column(nullable=false, length=500)
     private String contenido;
     @Column(nullable=false)
-    private Date estado;
+    private Date fecha;
 
     //Faltan las relaciones
     
