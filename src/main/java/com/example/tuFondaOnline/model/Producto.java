@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,5 +35,17 @@ public class Producto {
 
     @Column(name="stock", nullable = false)
     private int stock;
-    
+
+    @Column(name="img")
+    private String img;
+
+    @Column(name="enOferta", nullable = false)
+    private Boolean enOferta;
+
+    @Column(name="precio_oferta")
+    private Double precioOferta;
+
+    //@JoinColumn(name="id_categoria", nullable = false)
+    //private Categoria categoria;
+   
 }
