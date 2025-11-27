@@ -47,6 +47,7 @@ public class Usuario implements UserDetails {
     @Column(nullable = false, length=100)
     private String password;
 
+
 // Métodos UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
