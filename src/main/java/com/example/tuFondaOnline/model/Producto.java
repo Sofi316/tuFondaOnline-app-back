@@ -31,7 +31,7 @@ public class Producto {
     private String descripcion;
 
     @Column(name="precio", nullable = false)
-    private Double precio;
+    private Integer precio;
 
     @Column(name="stock", nullable = false)
     private int stock;
@@ -43,7 +43,7 @@ public class Producto {
     private Boolean enOferta;
 
     @Column(name="precio_oferta")
-    private Double precioOferta;
+    private Integer precioOferta;
 
     //@JoinColumn(name="id_categoria", nullable = false)
     //private Categoria categoria;
