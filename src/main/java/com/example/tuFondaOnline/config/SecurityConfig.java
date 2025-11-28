@@ -41,7 +41,36 @@ public class SecurityConfig {
                     "/api/blog/**"
                 ).permitAll()
 
-                //Todo lo demás requiere login (POST, PUT DELETE)
+                // =========================================================
+                // 2. ZONA ADMINISTRATIVA (VENDEDOR Y ADMIN)
+                // =========================================================
+                // Regla: "Vendedor puede visualizar lista y detalle de órdenes"
+                // Aquí damos permiso de LECTURA (GET) a ambos roles.
+                .requestMatchers(HttpMethod.GET, 
+                    "/api/ordenes/**", 
+                    "/api/detalles-orden/**"
+                ).hasAnyAuthority("VENDEDOR", "ADMINISTRADOR")
+
+
+                // =========================================================
+                // 3. ZONA CRÍTICA (SOLO ADMIN)
+                // =========================================================
+                // Si alguien intenta CREAR, EDITAR o BORRAR Órdenes/Detalles, debe ser ADMIN.
+                // El Vendedor será rechazado aquí (Error 403).
+                .requestMatchers(HttpMethod.POST, "/api/ordenes/**", "/api/detalles-orden/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.PUT, "/api/ordenes/**", "/api/detalles-orden/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/ordenes/**", "/api/detalles-orden/**").hasAuthority("ADMINISTRADOR")
+                
+                // Gestión de Usuarios y Productos (Modificar) solo Admin
+                .requestMatchers("/api/usuarios/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasAuthority("ADMINISTRADOR")
+
+
+                // =========================================================
+                // 4. CLIENTES Y OTROS
+                // =========================================================
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
@@ -49,7 +78,6 @@ public class SecurityConfig {
             )
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
             return http.build();
     }
     
