@@ -69,7 +69,7 @@ public class PublicacionController {
                 schema = @Schema(implementation = Publicacion.class),
                 examples = @ExampleObject(
                     name = "EjemploPublicacion",
-                    value = "{\"id\":1,\"titulo\":\"Título de la publicación\",\"bajada\":\"Bajada de la publicación\",\"detalle\":\"Detalle de la publicación\",\"imagen\":\"imagen.jpg\",\"contenido\":\"Contenido de la publicación\",\"fecha\":\"2024-06-01T12:00:00\"}"
+                    value = "{\"titulo\":\"Título de la publicación\",\"bajada\":\"Bajada de la publicación\",\"detalle\":\"Detalle de la publicación\",\"imagen\":\"Ruta de la imagen\",\"contenido\":\"Contenido de la publicación\",\"fecha\":\"20/11/2015 13:45:00\"}"
                 )
             )
         )
@@ -95,7 +95,7 @@ public class PublicacionController {
                 schema = @Schema(implementation = Publicacion.class),
                 examples = @ExampleObject(
                     name = "EjemploPublicacionActualizada",
-                    value = "{\"id\":1,\"titulo\":\"Título de la publicación\",\"bajada\":\"Bajada de la publicación\",\"detalle\":\"Detalle de la publicación\",\"imagen\":\"imagen.jpg\",\"contenido\":\"Contenido de la publicación\",\"fecha\":\"2024-06-01T12:00:00\"}"
+                    value = "{\"titulo\":\"Título de la publicación\",\"bajada\":\"Bajada de la publicación\",\"detalle\":\"Detalle de la publicación\",\"imagen\":\"Ruta de la imagen\",\"contenido\":\"Contenido de la publicación\",\"fecha\":\"20/11/2015 13:45:00\"}"
                 )
             )
         )

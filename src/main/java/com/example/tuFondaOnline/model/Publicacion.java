@@ -1,7 +1,5 @@
 package com.example.tuFondaOnline.model;
 
-import java.util.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,5 +32,5 @@ public class Publicacion {
     @Column(nullable=false, length=700)
     private String contenido;
     @Column(nullable=false)
-    private Date fecha;    
+    private String fecha;    
 }

@@ -71,7 +71,7 @@ public class CategoriaController {
                 schema = @Schema(implementation = Categoria.class),
                 examples = @ExampleObject(
                     name = "EjemploCategoria",
-                    value = "{ \"idCategoria\": 1, \"nombre\": \"Alimentos\" }"
+                    value = "{ \"nombre\": \"Postres\" }"
                 )
             )
         )
@@ -97,7 +97,7 @@ public class CategoriaController {
                 schema = @Schema(implementation = Categoria.class),
                 examples = @ExampleObject(
                     name = "EjemploCategoriaActualizada",
-                    value = "{ \"idCategoria\": 1, \"nombre\": \"Alimentos\" }"                )
+                    value = "{ \"nombre\": \"Postres\" }"                )
             )
         )
         @RequestBody Categoria categoria){
