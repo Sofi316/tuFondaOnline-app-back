@@ -22,7 +22,7 @@ public class Region {
     @Column(name="id_region")
     private Long id;
 
-    @Column(nullable = false, length=40)
+    @Column(nullable = false, length=100)
     private String nombre;
 
 }

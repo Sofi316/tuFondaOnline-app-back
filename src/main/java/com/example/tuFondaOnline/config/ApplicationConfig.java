@@ -1,4 +1,5 @@
 package com.example.tuFondaOnline.config;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,28 +13,36 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.tuFondaOnline.repository.UsuarioRepository;
+
 @Configuration
 public class ApplicationConfig {
+
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    //1. Servicio para buscar usuarios
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         return username -> usuarioRepository.findByEmail(username)
         .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
     }
 
-   
-    //2. Administrador de autenticación
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+    // -------------------------------------
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    //3. Encriptador de contraseñas
-    @Bean public PasswordEncoder passwordEncoder(){
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
 }
