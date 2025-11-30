@@ -71,14 +71,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // 3. ¡EL TRUCO! Si el token falla (expiro, usuario no existe, etc.),
-            // NO lanzamos error. Solo imprimimos un log y dejamos que la petición siga.
-            // Si la ruta era pública (/register), funcionará.
-            // Si era privada, Spring Security dará 403 más adelante.
+           
             System.out.println(">>> Error procesando JWT (Se ignorará): " + e.getMessage());
         }
 
-        // 4. Continuamos la cadena
+     
         filterChain.doFilter(request, response);
     }
 }

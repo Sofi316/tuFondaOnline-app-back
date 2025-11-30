@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
         version = "1.0",
         description = "Documentación oficial de la API"
     ),
-    // Esto aplica la seguridad a TODOS los endpoints automáticamente
     security = @SecurityRequirement(name = "bearerAuth")
 )
 @SecurityScheme(
@@ -25,5 +24,4 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
     bearerFormat = "JWT"
 )
 public class OpenApiConfig {
-    // Clase vacía, solo necesitamos las anotaciones
 }

@@ -39,16 +39,16 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
 
                 // 2. RUTAS GET PÚBLICAS
-                .requestMatchers(HttpMethod.GET, "/api/productos/**", "/api/categorias/**", "/api/regiones/**", "/api/comunas/**", "/api/blog/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/productos/**", "/api/categorias/**","/api/publicaciones/**", "/api/regiones/**", "/api/comunas/**").permitAll()
 
                 // 3. VENDEDOR Y ADMIN
                 .requestMatchers(HttpMethod.GET, "/api/ordenes/**", "/api/detalles-orden/**").hasAnyAuthority("VENDEDOR", "ADMINISTRADOR")
 
                 // 4. SOLO ADMIN (Modificaciones críticas)
                 .requestMatchers("/api/usuarios/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers(HttpMethod.POST, "/api/productos/**", "/api/ordenes/**", "/api/detalles-orden/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers(HttpMethod.PUT, "/api/productos/**", "/api/ordenes/**", "/api/detalles-orden/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers(HttpMethod.DELETE, "/api/productos/**", "/api/ordenes/**", "/api/detalles-orden/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.POST, "/api/productos/**", "/api/ordenes/**", "/api/detalles-orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.PUT, "/api/productos/**", "/api/ordenes/**", "/api/detalles-orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/productos/**", "/api/ordenes/**", "/api/detalles-orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
 
                 // 5. RESTO CERRADO
                 .anyRequest().authenticated()
