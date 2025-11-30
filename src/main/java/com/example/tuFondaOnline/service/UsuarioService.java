@@ -9,6 +9,7 @@ import com.example.tuFondaOnline.repository.UsuarioRepository;
 public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public List<Usuario> findAll(){

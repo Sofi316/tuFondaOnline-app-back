@@ -36,7 +36,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setEmail("admin@duoc.cl");
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRol("ADMINISTRADOR");
-            admin.setRun("11.111.111-1");
+            admin.setRut("11.111.111-1");
             admin.setActivo(true);
             admin.setDireccion("Casa Central");
             admin.setFechaRegistro(LocalDate.now());
@@ -52,7 +52,7 @@ public class DataInitializer implements CommandLineRunner {
             vendedor.setEmail("vendedor@duoc.cl");
             vendedor.setPassword(passwordEncoder.encode("vendedor123"));
             vendedor.setRol("VENDEDOR");
-            vendedor.setRun("22.222.222-2");
+            vendedor.setRut("22.222.222-2");
             vendedor.setActivo(true);
             vendedor.setDireccion("Sucursal Oeste");
             vendedor.setFechaRegistro(LocalDate.now());

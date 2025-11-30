@@ -1,4 +1,5 @@
 package com.example.tuFondaOnline.controller;
+
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,8 +91,9 @@ public class UsuarioController {
                 schema = @Schema(implementation = Usuario.class),
                 examples= @ExampleObject(
                     name= "Ejemplo de usuario actualizado",
-                    value= "{\"nombre\": \"Camila Ramelli\", \"email\": \"camila.ramelli@duocuc.cl\", \"rut\": \"12.345.678-9\", \"direccion\": \"Calle Falsa 123\", \"rol\": \"CLIENTE\", \"password\": \"securePass123\", \"fechaNac\": \"1987-08-13\", \"comuna\": {\"id\": 3}, \"activo\": true}"
+                    value= "{\"nombre\": \"Camila Ramelli\", \"email\": \"camila.ramelli@duocuc.cl\", \"rut\": \"12.345.678-9\", \"direccion\": \"Calle real 456\", \"rol\": \"CLIENTE\", \"password\": \"securePass123\", \"fechaNac\": \"1987-08-13\", \"comuna\": {\"id\": 3}, \"activo\": true}"
                 ))) @RequestBody Usuario usuario){
+                   
                     usuario.setId(id);
                     return usuarioService.save(usuario);
                 }

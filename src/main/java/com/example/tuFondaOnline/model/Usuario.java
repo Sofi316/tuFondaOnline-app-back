@@ -9,7 +9,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Entity
 @Table(name = "usuario")
 @Data
@@ -23,7 +22,7 @@ public class Usuario implements UserDetails {
     private Long id;
 
     @Column(nullable = false, length=13, unique=true)
-    private String run;
+    private String rut;
 
     @Column(nullable = false, length=40)
     private String nombre;
@@ -38,7 +37,7 @@ public class Usuario implements UserDetails {
     @Column(nullable=false, length=120)
     private String direccion;
 
-    @Column(name = "fecha_registro")
+    @Column(name = "fecha_registro",updatable = false)
     private LocalDate fechaRegistro;
 
     @Column(name = "fecha_nac")
@@ -74,6 +73,13 @@ public class Usuario implements UserDetails {
         return activo;
     }
 
+    @PrePersist
+    public void asignarFechaRegistro() {
+    
+        if (this.fechaRegistro == null) {
+            this.fechaRegistro = LocalDate.now();
+        }
+    }
     @ManyToOne
     @JoinColumn(name = "id_comuna") 
     private Comuna comuna;

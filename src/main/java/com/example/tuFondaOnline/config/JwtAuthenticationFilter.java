@@ -1,7 +1,9 @@
 package com.example.tuFondaOnline.config;
+
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,72 +14,71 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.tuFondaOnline.service.JwtService;
 
-import jakarta.servlet.FilterChain; 
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter{
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtService jwtService;
 
     @Autowired
     private UserDetailsService userDetailsService;
-    
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-        throws ServletException, IOException{
-            
-            // 1. Para obtener el header de autorización
-            final String authHeader = request.getHeader("Authorization");
-            final String jwt;
-            final String userEmail;
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        // Si la ruta empieza con /auth/ (login o register), saltamos el filtro JWT.
+        return path.startsWith("/auth/");
+    }
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
 
-            // 2. VALIDAR SI EL HEADER ES CORRECTO
-        
-            if(authHeader==null || !authHeader.startsWith("Bearer ")){
-                filterChain.doFilter(request,response);
-                return;
-            }
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String userEmail;
 
-            //3. Extraer el TOKEN (se quita la palabra "Bearer ")
-            jwt= authHeader.substring(7);
-
-            //4. Extraer el email del TOKEN
-            userEmail=jwtService.extractUsername(jwt);
-
-            //5. Validar y autenticar
-            //Si hay un email y el usuario NO está autenticado todavía en el contexto
-            if (userEmail !=null && SecurityContextHolder.getContext().getAuthentication()== null){
-                
-                //Busca usuario en la bbdd
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-                
-                //Verificamos si el token es válido para ese usuario
-                if(jwtService.isTokenValid(jwt, userDetails)){
-
-                    //Creamos una credencial oficial de spring
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                    );
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    //Le decimos a spring que el usuario es legítimo, que puede pasar
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-
-            }
-
-            //6. Continuar con el siguiente filtro
-            filterChain.doFilter(request,response);
-
-
-
-
+        // 1. Si no hay token, seguimos sin hacer nada (Petición Anónima)
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
+        try {
+            // 2. Intentamos procesar el token
+            jwt = authHeader.substring(7);
+            userEmail = jwtService.extractUsername(jwt);
 
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+        } catch (Exception e) {
+            // 3. ¡EL TRUCO! Si el token falla (expiro, usuario no existe, etc.),
+            // NO lanzamos error. Solo imprimimos un log y dejamos que la petición siga.
+            // Si la ruta era pública (/register), funcionará.
+            // Si era privada, Spring Security dará 403 más adelante.
+            System.out.println(">>> Error procesando JWT (Se ignorará): " + e.getMessage());
+        }
+
+        // 4. Continuamos la cadena
+        filterChain.doFilter(request, response);
+    }
 }

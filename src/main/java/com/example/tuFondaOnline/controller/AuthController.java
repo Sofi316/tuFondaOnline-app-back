@@ -56,13 +56,14 @@ public class AuthController {
                 schema = @Schema(implementation = Usuario.class),
                 examples = @ExampleObject(
                     name = "Ejemplo Cliente",
-                    value = "{\"nombre\": \"Cliente Nuevo\", \"email\": \"cliente@duoc.cl\", \"password\": \"1234\", \"rol\": \"CLIENTE\", \"run\": \"15.555.555-5\", \"direccion\": \"Av. Siempre Viva 742\", \"activo\": true, \"fechaNac\": \"1998-05-20\", \"comuna\": {\"id\": 1}}"
+                    value = "{\"nombre\": \"Cliente Nuevo\", \"email\": \"cliente@duoc.cl\", \"password\": \"1234\", \"rol\": \"CLIENTE\", \"rut\": \"15.555.555-5\", \"direccion\": \"Av. Siempre Viva 742\", \"activo\": true, \"fechaNac\": \"1998-05-20\", \"comuna\": {\"id\": 1}}"
                 )
             )
         )
         @RequestBody Usuario usuario) {
         
         usuario.setRol("CLIENTE");
+      
         
         Usuario usuarioGuardado = usuarioService.save(usuario);
         String token = jwtService.generateToken(usuarioGuardado);
