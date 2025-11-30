@@ -1,3 +1,4 @@
+// src/main/java/com/example/backend/config/CorsConfig.java
 package com.example.tuFondaOnline.config;
 
 import org.springframework.context.annotation.Configuration;
