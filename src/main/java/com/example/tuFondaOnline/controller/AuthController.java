@@ -41,6 +41,7 @@ public class AuthController {
     @Autowired
     private final JwtService jwtService;
 
+    //Registrar usuario público
     @PostMapping("/register")
     @Operation(summary = "Registrar nuevo usuario", description = "Crea un usuario y devuelve el token de acceso")
     @ApiResponses(value = {
@@ -76,7 +77,7 @@ public class AuthController {
         // Devolvemos Token y Usuario completo (para el Frontend)
         return ResponseEntity.ok(new AuthResponse(token, usuarioGuardado));
     }
-
+     //Login usuario 
     @PostMapping("/login")
     @Operation(summary = "Iniciar sesión", description = "Autentica al usuario y devuelve un token JWT")
     @ApiResponses(value = {
