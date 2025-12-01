@@ -1,10 +1,11 @@
 package com.example.tuFondaOnline.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,18 +57,24 @@ public class AuthController {
                 schema = @Schema(implementation = Usuario.class),
                 examples = @ExampleObject(
                     name = "Ejemplo Cliente",
-                    value = "{\"nombre\": \"Cliente Nuevo\", \"email\": \"prueba@duoc.cl\", \"password\": \"1234\", \"rol\": \"CLIENTE\", \"rut\": \"16.666.333-4\", \"direccion\": \"Av. Siempre Viva 742\", \"activo\": true, \"fechaNac\": \"1998-05-20\", \"comuna\": {\"id\": 1}}"
+                    value = "{\"nombre\": \"Cliente Nuevo\", \"email\": \"prueba@duoc.cl\", \"password\": \"1234\", \"rut\": \"16.666.333-4\", \"direccion\": \"Av. Siempre Viva 742\", \"activo\": true, \"fechaNac\": \"1998-05-20\", \"comuna\": {\"id\": 1}}"
                 )
             )
         )
         @RequestBody Usuario usuario) {
         
+        // Forzamos rol y fecha para seguridad
         usuario.setRol("CLIENTE");
-      
+        usuario.setFechaRegistro(LocalDate.now());
         
+        // Guardamos
         Usuario usuarioGuardado = usuarioService.save(usuario);
+        
+        // Generamos token
         String token = jwtService.generateToken(usuarioGuardado);
-        return ResponseEntity.ok(new AuthResponse(token));
+        
+        // Devolvemos Token y Usuario completo (para el Frontend)
+        return ResponseEntity.ok(new AuthResponse(token, usuarioGuardado));
     }
 
     @PostMapping("/login")
@@ -75,7 +82,7 @@ public class AuthController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Login exitoso", 
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
-        @ApiResponse(responseCode = "403", description = "Credenciales incorrectas (Usuario o password mal)")
+        @ApiResponse(responseCode = "403", description = "Credenciales incorrectas")
     })
     public ResponseEntity<AuthResponse> login(
         @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -92,13 +99,19 @@ public class AuthController {
         )
         @RequestBody LoginRequest request) {
         
+        // 1. Autenticar (Si falla, lanza error aquí mismo)
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        UserDetails user = usuarioService.findByEmail(request.getEmail());
-        String token = jwtService.generateToken(user);
-
-        return ResponseEntity.ok(new AuthResponse(token));
+        // 2. Buscar al usuario 
+    
+        Usuario usuarioReal = usuarioService.findByEmail(request.getEmail());
+        
+        // 3. Generar Token
+        String token = jwtService.generateToken(usuarioReal);
+        
+        // 4. Devolver respuesta compuesta
+        return ResponseEntity.ok(new AuthResponse(token, usuarioReal));
     }
 }

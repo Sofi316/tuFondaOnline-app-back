@@ -1,5 +1,7 @@
 package com.example.tuFondaOnline.config;
 
+import java.util.List; 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,9 +33,20 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            
+            
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration configuration = new CorsConfiguration();
+                configuration.setAllowedOrigins(List.of("http://localhost:3000")); 
+                configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedHeaders(List.of("*"));
+                configuration.setAllowCredentials(true);
+                return configuration;
+            }))
+            // ---------------------------------------------
+
             .authorizeHttpRequests(auth -> auth
-                // 1. ZONA PÚBLICA (USANDO ANT-MATCHER BLINDADO)
-                // Usamos "new AntPathRequestMatcher" para evitar confusiones de Spring
+                // 1. ZONA PÚBLICA
                 .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
@@ -39,17 +54,23 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
 
                 // 2. RUTAS GET PÚBLICAS
-                .requestMatchers(HttpMethod.GET, "/api/productos/**", "/api/categorias/**","/api/publicaciones/**", "/api/regiones/**", "/api/comunas/**").permitAll()
+                .requestMatchers(HttpMethod.GET, 
+                    "/api/productos/**", 
+                    "/api/categorias/**",
+                    "/api/publicaciones/**", 
+                    "/api/regiones/**", 
+                    "/api/comunas/**"
+                ).permitAll()
 
                 // 3. VENDEDOR Y ADMIN
                 .requestMatchers(HttpMethod.GET, "/api/ordenes/**", "/api/detalle_orden/**").hasAnyAuthority("VENDEDOR", "ADMINISTRADOR","CLIENTE")
 
-                // ADMIN Y CLIENTE
-                // El cliente necesita poder crear (POST) su orden y sus detalles
+                // ADMIN Y CLIENTE (POST Ordenes)
                 .requestMatchers(HttpMethod.POST, 
                     "/api/ordenes/**", 
                     "/api/detalle_orden/**"
                 ).hasAnyAuthority("CLIENTE", "ADMINISTRADOR")
+
                 // 4. SOLO ADMIN 
                 .requestMatchers("/api/usuarios/**").hasAuthority("ADMINISTRADOR")
                 .requestMatchers(HttpMethod.POST, "/api/productos/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
