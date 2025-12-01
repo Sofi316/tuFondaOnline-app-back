@@ -42,13 +42,19 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/productos/**", "/api/categorias/**","/api/publicaciones/**", "/api/regiones/**", "/api/comunas/**").permitAll()
 
                 // 3. VENDEDOR Y ADMIN
-                .requestMatchers(HttpMethod.GET, "/api/ordenes/**", "/api/detalles-orden/**").hasAnyAuthority("VENDEDOR", "ADMINISTRADOR")
+                .requestMatchers(HttpMethod.GET, "/api/ordenes/**", "/api/detalle_orden/**").hasAnyAuthority("VENDEDOR", "ADMINISTRADOR","CLIENTE")
 
-                // 4. SOLO ADMIN (Modificaciones críticas)
+                // ADMIN Y CLIENTE
+                // El cliente necesita poder crear (POST) su orden y sus detalles
+                .requestMatchers(HttpMethod.POST, 
+                    "/api/ordenes/**", 
+                    "/api/detalle_orden/**"
+                ).hasAnyAuthority("CLIENTE", "ADMINISTRADOR")
+                // 4. SOLO ADMIN 
                 .requestMatchers("/api/usuarios/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers(HttpMethod.POST, "/api/productos/**", "/api/ordenes/**", "/api/detalles-orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers(HttpMethod.PUT, "/api/productos/**", "/api/ordenes/**", "/api/detalles-orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers(HttpMethod.DELETE, "/api/productos/**", "/api/ordenes/**", "/api/detalles-orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.POST, "/api/productos/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.PUT, "/api/productos/**", "/api/ordenes/**", "/api/detalle_orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.DELETE, "/api/productos/**", "/api/ordenes/**", "/api/detalle_orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
 
                 // 5. RESTO CERRADO
                 .anyRequest().authenticated()

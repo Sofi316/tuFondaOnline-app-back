@@ -26,92 +26,86 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/publicaciones")
-@Tag(name = "Publicaciones", description = "Operaciones relacionadas con las publicaciones")
+@Tag(name = "Publicaciones (Blog)", description = "Gestión de noticias y artículos del blog")
 public class PublicacionController {
+
     @Autowired
     private PublicacionService publicacionService;
 
     @GetMapping
-    @Operation(summary = "Obtener todas las publicaciones", description = "Obtiene una lista de todas las publicaciones")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Operación exitosa",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = Publicacion.class)))
-    })
-    public List<Publicacion> getAll(){
+    @Operation(summary = "Listar publicaciones", description = "Obtiene todos los artículos del blog")
+    public List<Publicacion> listarPublicaciones() {
         return publicacionService.findAll();
     }
+
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener una publicación por ID", description = "Obtiene una publicación específica utilizando su id")
+    @Operation(summary = "Buscar publicación", description = "Obtiene un artículo específico por ID")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Operación exitosa",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = Publicacion.class))),
-        @ApiResponse(responseCode = "404", description = "Publicación no encontrada")
+        @ApiResponse(responseCode = "200", description = "Encontrado"),
+        @ApiResponse(responseCode = "404", description = "No existe")
     })
-    public Publicacion getById(
-        @Parameter(description = "ID de la publicación a buscar", required = true) @PathVariable Long id){
+    public Publicacion obtenerPublicacion(@PathVariable Long id) {
         return publicacionService.findById(id);
     }
 
     @PostMapping
-    @Operation(summary = "Crear una nueva publicación", description = "Crea una nueva publicación")
+    @Operation(summary = "Crear publicación", description = "Publica un nuevo artículo (Solo Admin)")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Publicación creada exitosamente",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = Publicacion.class)))
+        @ApiResponse(responseCode = "200", description = "Publicado exitosamente",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Publicacion.class)))
     })
-    public Publicacion create(@io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Publicación a crear",
+    public Publicacion crearPublicacion(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Datos del artículo",
             required = true,
             content = @Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = Publicacion.class),
                 examples = @ExampleObject(
-                    name = "EjemploPublicacion",
-                    value = "{\"titulo\":\"Título de la publicación\",\"bajada\":\"Bajada de la publicación\",\"detalle\":\"Detalle de la publicación\",\"imagen\":\"Ruta de la imagen\",\"contenido\":\"Contenido de la publicación\",\"fecha\":\"2025-11-29\"}"
+                    name = "Ejemplo Juegos Típicos",
+                    value = "{\n" +
+                            "  \"titulo\": \"Los mejores juegos típicos\",\n" +
+                            "  \"bajada\": \"Descubre cómo divertirte con el emboque, el trompo y el palo ensebado.\",\n" +
+                            "  \"detalle\": \"Tradiciones Patrias\",\n" +
+                            "  \"imagen\": \"/imagenes/blogs/juegos.jpg\",\n" +
+                            "  \"contenido\": \"Chile tiene una rica tradición de juegos... (texto largo)...\"\n" +
+                            "}"
                 )
             )
         )
-        @RequestBody Publicacion publicacion){
+        @RequestBody Publicacion publicacion) {
         return publicacionService.save(publicacion);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar una publicación", description = "Actualiza una publicación existente por su ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Publicación actualizada exitosamente",
-            content = @Content(mediaType = "application/json",
-                schema = @Schema(implementation = Publicacion.class))),
-        @ApiResponse(responseCode = "404", description = "Publicación no encontrada")
-    })
-    public Publicacion update(
-        @Parameter(description = "ID de la publicación a actualizar", required = true) @PathVariable Long id,
+    @Operation(summary = "Editar publicación", description = "Modifica un artículo existente (Solo Admin)")
+    public Publicacion actualizarPublicacion(
+        @Parameter(description = "ID de la publicación", required = true) @PathVariable Long id,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Publicación con los datos actualizados",
-            required = true,
+            description = "Datos actualizados",
             content = @Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = Publicacion.class),
                 examples = @ExampleObject(
-                    name = "EjemploPublicacionActualizada",
-                    value = "{\"titulo\":\"Título de la publicación\",\"bajada\":\"Bajada de la publicación\",\"detalle\":\"Detalle de la publicación\",\"imagen\":\"Ruta de la imagen\",\"contenido\":\"Contenido de la publicación\",\"fecha\":\"2025-11-29\"}"
+                    name = "Editar Juegos",
+                    value = "{\n" +
+                            "  \"titulo\": \"Los mejores juegos típicos chilenos (Editado)\",\n" +
+                            "  \"bajada\": \"Nueva bajada actualizada para el artículo.\",\n" +
+                            "  \"detalle\": \"Tradiciones\",\n" +
+                            "  \"imagen\": \"/imagenes/blogs/juegos_v2.jpg\",\n" +
+                            "  \"contenido\": \"Contenido corregido y aumentado...\"\n" +
+                            "}"
                 )
             )
         )
-        @RequestBody Publicacion publicacion){
+        @RequestBody Publicacion publicacion) {
         publicacion.setIdPublicacion(id);
         return publicacionService.save(publicacion);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar una publicación", description = "Elimina una publicación por su ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Publicación eliminada exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Publicación no encontrada")
-    })
-    public void delete(
-        @Parameter(description = "ID de la publicación a borrar", required = true) @PathVariable Long id){
+    @Operation(summary = "Borrar publicación", description = "Elimina un artículo del blog (Solo Admin)")
+    public void eliminarPublicacion(@PathVariable Long id) {
         publicacionService.delete(id);
     }
 }

@@ -60,5 +60,21 @@ public class DataInitializer implements CommandLineRunner {
             vendedor.setComuna(santiago);
             usuarioRepository.save(vendedor);
         }
+
+        if (usuarioRepository.findByEmail("cliente@duoc.cl").isEmpty()) {
+            Usuario cliente = new Usuario();
+            cliente.setNombre("Cliente Habitual");
+            cliente.setEmail("cliente@duoc.cl");
+            cliente.setPassword(passwordEncoder.encode("1234")); 
+            cliente.setRol("CLIENTE");
+            cliente.setRut("15.555.555-5");
+            cliente.setActivo(true);
+            cliente.setDireccion("Av. Siempre Viva 742");
+            cliente.setFechaRegistro(LocalDate.now());
+            cliente.setFechaNac(LocalDate.of(2000, 10, 10));
+            cliente.setComuna(santiago);
+            usuarioRepository.save(cliente);
+            System.out.println(">>> CLIENTE CREADO: cliente@duoc.cl / 1234");
+        }
     }
 }

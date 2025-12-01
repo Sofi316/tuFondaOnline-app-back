@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,13 +40,14 @@ public class Producto {
     @Column(name="img")
     private String img;
 
-    @Column(name="enOferta", nullable = false)
+    @Column(name="en_oferta", nullable = false)
     private Boolean enOferta;
 
     @Column(name="precio_oferta")
     private Integer precioOferta;
 
-    //@JoinColumn(name="id_categoria", nullable = false)
-    //private Categoria categoria;
+    @ManyToOne
+    @JoinColumn(name="id_categoria", nullable = false)
+    private Categoria categoria;
    
 }

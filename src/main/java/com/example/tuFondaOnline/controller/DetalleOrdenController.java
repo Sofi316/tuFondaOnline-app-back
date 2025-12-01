@@ -1,7 +1,9 @@
 package com.example.tuFondaOnline.controller;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.tuFondaOnline.model.DetalleOrden;
+import com.example.tuFondaOnline.model.Orden;
+import com.example.tuFondaOnline.model.Producto; 
 import com.example.tuFondaOnline.service.DetalleOrdenService;
+import com.example.tuFondaOnline.service.OrdenService;
+import com.example.tuFondaOnline.service.ProductoService; 
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,17 +37,33 @@ public class DetalleOrdenController {
     @Autowired
     private DetalleOrdenService detalleOrdenService;
 
+    @Autowired
+    private OrdenService ordenService;
+
+    @Autowired
+    private ProductoService productoService; 
+
     @GetMapping
-    @Operation(summary = "Obtener todos los detalles de orden", description = "Obtiene una lista de todos los detalles de orden")
+    @Operation(summary = "Obtener todos los detalles de orden", description = "Obtiene una lista de todos los detalles. Si es cliente, filtra solo los propios.")
     @ApiResponses(value={
         @ApiResponse(responseCode = "200",description = "Operación exitosa"),
         @ApiResponse(responseCode = "404",description = "Detalle de orden no encontrado",
-            content=@Content(mediaType = "application/json",
-                schema = @Schema(implementation = DetalleOrden.class))
+        content=@Content(mediaType = "application/json",
+            schema = @Schema(implementation = DetalleOrden.class))
         )
     })
-    public List<DetalleOrden> listarDetalleOrden() {
-        return detalleOrdenService.findAll();
+    public List<DetalleOrden> listarDetalleOrden(Authentication authentication) {
+        
+        boolean esJefe = authentication.getAuthorities().stream()
+            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR") || 
+                             rol.getAuthority().equals("VENDEDOR"));
+
+        if (esJefe) {
+            return detalleOrdenService.findAll();
+        } else {
+            String email = authentication.getName();
+            return detalleOrdenService.findByUsuarioEmail(email);
+        }
     }
 
     @GetMapping("/{id}")
@@ -63,7 +85,9 @@ public class DetalleOrdenController {
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = DetalleOrden.class)))
     })
-    public DetalleOrden crearDetalleOrden(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+    public DetalleOrden crearDetalleOrden(
+        Authentication authentication,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "Detalle de orden a crear",
         required= true,
         content = @Content(
@@ -73,6 +97,27 @@ public class DetalleOrdenController {
             name = "EjemploDetalleOrden",
             value = "{\"orden\": {\"id\": 1}, \"producto\": {\"id\": 2}, \"cantidad\": 3, \"precio\": 1500}")))
         @RequestBody DetalleOrden detalleOrden) {
+        
+        // 1. Buscamos la Orden Completa (Para validar y para rellenar el JSON)
+        Orden ordenObjetivo = ordenService.findById(detalleOrden.getOrden().getId());
+        detalleOrden.setOrden(ordenObjetivo); // Asignamos el objeto completo
+
+        // 2. Seguridad: Verificar dueño
+        boolean esJefe = authentication.getAuthorities().stream()
+            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR") || 
+                             rol.getAuthority().equals("VENDEDOR"));
+
+        if (!esJefe) {
+            String emailUsuario = authentication.getName();
+            if (ordenObjetivo != null && !ordenObjetivo.getUsuario().getEmail().equals(emailUsuario)) {
+                throw new RuntimeException("Acceso denegado: No puedes agregar productos a una orden ajena.");
+            }
+        }
+
+        // 3. Buscamos el Producto Completo 
+        Producto productoReal = productoService.findById(detalleOrden.getProducto().getId());
+        detalleOrden.setProducto(productoReal); // Asignamos el objeto completo
+
         return detalleOrdenService.save(detalleOrden);
     }
 
@@ -96,7 +141,9 @@ public class DetalleOrdenController {
             name = "EjemploDetalleOrden",
             value = "{\"orden\": {\"id\": 1}, \"producto\": {\"id\": 2}, \"cantidad\": 4, \"precio\": 2000}"))) 
      @RequestBody DetalleOrden detalleOrden) {
+        
         detalleOrden.setId(id);
+        
         return detalleOrdenService.save(detalleOrden);
     }
 

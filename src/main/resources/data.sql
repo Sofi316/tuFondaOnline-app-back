@@ -1,4 +1,4 @@
--- Insertar Regiones (IDs manuales obligatorios)
+SET FOREIGN_KEY_CHECKS = 0;
 INSERT INTO region (id_region, nombre) VALUES 
 (1, 'Arica y Parinacota'),
 (2, 'Tarapacá'),
@@ -17,7 +17,7 @@ INSERT INTO region (id_region, nombre) VALUES
 (15, 'Aysén del General Carlos Ibáñez del Campo'),
 (16, 'Magallanes y de la Antártica Chilena');
 
--- Insertar Comunas (Sin ID, se autogenera)
+
 INSERT INTO comuna (nombre, id_region) VALUES
 ('Arica', 1), ('Camarones', 1), ('Putre', 1), ('General Lagos', 1),
 ('Iquique', 2), ('Alto Hospicio', 2), ('Pozo Almonte', 2), ('Camiña', 2), ('Colchane', 2), ('Huara', 2), ('Pica', 2),
@@ -35,3 +35,62 @@ INSERT INTO comuna (nombre, id_region) VALUES
 ('Puerto Montt', 14), ('Calbuco', 14), ('Cochamó', 14), ('Fresia', 14), ('Frutillar', 14), ('Los Muermos', 14), ('Llanquihue', 14), ('Maullín', 14), ('Puerto Varas', 14), ('Castro', 14), ('Ancud', 14), ('Chonchi', 14), ('Curaco de Vélez', 14), ('Dalcahue', 14), ('Puqueldón', 14), ('Queilén', 14), ('Quellón', 14), ('Quemchi', 14), ('Quinchao', 14), ('Osorno', 14), ('Puerto Octay', 14), ('Purranque', 14), ('Puyehue', 14), ('Río Negro', 14), ('San Juan de la Costa', 14), ('San Pablo', 14), ('Chaitén', 14), ('Futaleufú', 14), ('Hualaihué', 14), ('Palena', 14),
 ('Coyhaique', 15), ('Lago Verde', 15), ('Aysén', 15), ('Cisnes', 15), ('Guaitecas', 15), ('Cochrane', 15), ('O''Higgins', 15), ('Tortel', 15), ('Chile Chico', 15), ('Río Ibáñez', 15),
 ('Punta Arenas', 16), ('Laguna Blanca', 16), ('Río Verde', 16), ('San Gregorio', 16), ('Cabo de Hornos', 16), ('Antártica', 16), ('Porvenir', 16), ('Primavera', 16), ('Timaukel', 16), ('Natales', 16), ('Torres del Paine', 16);
+
+-- =================================================================
+-- 2. CATEGORIAS DE PRODUCTOS
+-- =================================================================
+-- IDs Manuales para relacionar los productos fácilmente
+INSERT INTO categoria (nombre) VALUES 
+('Plato con Carne'), 
+('Plato sin carne'), 
+('Bebestible');      
+-- =================================================================
+-- 3. PRODUCTOS
+-- =================================================================
+
+
+INSERT INTO producto (nombre, descripcion, precio, stock, img, en_oferta, precio_oferta, id_categoria) VALUES
+-- Categoría 1: Plato con Carne
+('Choripán', 'Delicioso chorizo de Chillán asado a la parrilla dentro de un crujiente pan marraqueta.', 3000, 50, '/imagenes/productos/choripan.jpg', 0, NULL, 1),
+('Completo Italiano', 'Tradicional completo chileno con vienesa, palta fresca, tomate picado y mayonesa casera.', 3500, 40, '/imagenes/productos/completo.jpg', 0, NULL, 1),
+('Anticucho', 'Trozos jugosos de carne de vacuno, longaniza, cebolla y pimentón asados a la parrilla en brocheta.', 10000, 15, '/imagenes/productos/anticucho.jpg', 0, NULL, 1),
+('Pastel de Choclo', 'Clásico plato chileno con pino de carne, pollo, huevo duro y aceitunas, cubierto con pasta de choclo dulce.', 17000, 10, '/imagenes/productos/pastelchoclo.jpg', 0, NULL, 1),
+('Empanada de Pino', 'Masa rellena de carne picada, cebolla, aceitunas, pasas y huevo duro.', 5000, 30, '/imagenes/productos/empanada.jpg', 1, 4000, 1),
+
+-- Categoría 2: Plato sin carne
+('Choripán Vegano', 'Versión vegana del clásico choripán, con chorizo a base de plantas en pan marraqueta.', 3000, 20, '/imagenes/productos/choripanveg.jpg', 0, NULL, 2),
+('Completo Italiano Vegano', 'Completo italiano 100% vegano, con salchicha vegetal, palta, tomate y mayonesa vegana.', 3500, 18, '/imagenes/productos/completoveg.jpg', 0, NULL, 2),
+('Empanada Vegana', 'Empanada horneada rellena de un sabroso pino de champiñones, cebolla y especias.', 5000, 12, '/imagenes/productos/empanadaveg.jpg', 0, NULL, 2),
+('Empanada de Queso', 'Empanada frita rellena de abundante queso derretido.', 5000, 25, '/imagenes/productos/empanadaqueso.jpg', 0, NULL, 2),
+('Anticucho de Verduras', 'Brocheta de verduras de temporada (pimentón, cebolla, zapallo italiano, champiñón) asadas a la parrilla.', 8000, 8, '/imagenes/productos/anticuchoverdura.jpg', 0, NULL, 2),
+('Pastel de Choclo Vegano', 'Versión vegana del pastel de choclo, con pino a base de soya texturizada y verduras, cubierto de pasta de choclo.', 17000, 5, '/imagenes/productos/pastelchocloveg.jpg', 0, NULL, 2),
+
+-- Categoría 3: Bebestible
+('Terremoto para Niños', 'Versión sin alcohol del terremoto, preparada con helado de piña y granadina.', 3000, 80, '/imagenes/productos/terremotoniños.jpg', 0, NULL, 3),
+('Bebida Coca Cola', 'Clásica bebida Coca-Cola en formato lata o botella.', 2500, 200, '/imagenes/productos/coca-cola.jpg', 0, NULL, 3),
+('Agua', 'Agua mineral sin gas, botella de 500cc.', 1800, 150, '/imagenes/productos/agua.jpg', 0, NULL, 3),
+('Terremoto', 'Tradicional trago chileno con vino pipeño blanco, helado de piña y granadina.', 3500, 100, '/imagenes/productos/terremoto.jpg', 1, 3000, 3);
+
+-- =================================================================
+-- 4. PUBLICACIONES (BLOG)
+-- =================================================================
+
+
+INSERT INTO publicacion (titulo, bajada, detalle, imagen, contenido, fecha) VALUES
+(
+ 'Historia de las fondas chilenas',
+ 'Conoce el origen y evolución de las tradicionales fondas chilenas y su importancia en las fiestas patrias.',
+ 'Historia y Cultura',
+ '/imagenes/blogs/blog1.jpg',
+ 'Las fondas chilenas tienen su origen en el siglo XIX, evolucionando desde simples chinganas rurales hasta los grandes eventos masivos que conocemos hoy. Originalmente eran lugares de encuentro social donde se bebía chicha, se bailaba cueca y se comían platos típicos. Con el tiempo, se transformaron en el símbolo oficial de la celebración de las Fiestas Patrias, manteniendo vivas las tradiciones culinarias y folclóricas del país. Hoy en día, las fondas son un espacio imperdible cada 18 de septiembre.',
+ '2025-09-01 10:00:00'
+),
+(
+ 'Receta del terremoto',
+ 'Aprende a preparar el clásico terremoto chileno en tu casa con esta receta fácil y tradicional.',
+ 'Recetas Típicas',
+ '/imagenes/blogs/blog2.jpg',
+ 'El terremoto es una bebida típica de las fondas chilenas, famosa por su dulzor y su "engañoso" grado alcohólico. Para prepararlo necesitas: Vino pipeño blanco, Helado de piña y Granadina (opcionalmente Fernet o un chorrito de pisco). Preparación: En un vaso grande (ojalá de medio litro), pon dos bolas generosas de helado de piña. Luego, llena el vaso con el vino pipeño hasta casi el borde. Finalmente, agrega un chorrito de granadina para darle color y dulzor. ¡Revuelve y disfruta con responsabilidad!',
+ '2025-09-10 15:30:00'
+);
+SET FOREIGN_KEY_CHECKS = 1;
