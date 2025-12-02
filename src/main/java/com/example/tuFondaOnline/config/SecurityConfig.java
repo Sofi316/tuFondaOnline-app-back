@@ -47,35 +47,54 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
                 // 1. ZONA PÚBLICA
+             
                 .requestMatchers(new AntPathRequestMatcher("/auth/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
 
-                // 2. RUTAS GET PÚBLICAS
-                .requestMatchers(HttpMethod.GET, 
-                    "/api/productos/**", 
+                // 2. RUTAS GET PÚBLICAS (TIENDA)
+                .requestMatchers(HttpMethod.GET,
+                    "/api/productos",
+                    "/api/productos/**",
                     "/api/categorias/**",
-                    "/api/publicaciones/**", 
-                    "/api/regiones/**", 
+                    "/api/publicaciones/**",
+                    "/api/regiones/**",
                     "/api/comunas/**"
                 ).permitAll()
 
-                // 3. VENDEDOR Y ADMIN
-                .requestMatchers(HttpMethod.GET, "/api/ordenes/**", "/api/detalle_orden/**").hasAnyAuthority("VENDEDOR", "ADMINISTRADOR","CLIENTE")
-
-                // ADMIN Y CLIENTE (POST Ordenes)
-                .requestMatchers(HttpMethod.POST, 
+           
+                .requestMatchers(HttpMethod.GET, 
                     "/api/ordenes/**", 
-                    "/api/detalle_orden/**"
-                ).hasAnyAuthority("CLIENTE", "ADMINISTRADOR")
+                    "/api/detalle_orden/**",
+                    "/api/detalle_orden/orden/**"
+                ).hasAnyAuthority("VENDEDOR", "ADMINISTRADOR", "CLIENTE")
 
-                // 4. SOLO ADMIN 
+
+               
+
+                // 4. SOLO ADMIN (CRUD completo)
                 .requestMatchers("/api/usuarios/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers(HttpMethod.POST, "/api/productos/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers(HttpMethod.PUT, "/api/productos/**", "/api/ordenes/**", "/api/detalle_orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
-                .requestMatchers(HttpMethod.DELETE, "/api/productos/**", "/api/ordenes/**", "/api/detalle_orden/**", "/api/categorias/**","/api/publicaciones/**").hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.POST,
+                    "/api/productos/**",
+                    "/api/categorias/**",
+                    "/api/publicaciones/**"
+                ).hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.PUT,
+                    "/api/productos/**",
+                    "/api/ordenes/**",
+                    "/api/detalle_orden/**",
+                    "/api/categorias/**",
+                    "/api/publicaciones/**"
+                ).hasAuthority("ADMINISTRADOR")
+                .requestMatchers(HttpMethod.DELETE,
+                    "/api/productos/**",
+                    "/api/ordenes/**",
+                    "/api/detalle_orden/**",
+                    "/api/categorias/**",
+                    "/api/publicaciones/**"
+                ).hasAuthority("ADMINISTRADOR")
 
                 // 5. RESTO CERRADO
                 .anyRequest().authenticated()

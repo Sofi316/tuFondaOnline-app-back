@@ -67,6 +67,7 @@ public class AuthController {
         // Forzamos rol y fecha para seguridad
         usuario.setRol("CLIENTE");
         usuario.setFechaRegistro(LocalDate.now());
+
         
         // Guardamos
         Usuario usuarioGuardado = usuarioService.save(usuario);

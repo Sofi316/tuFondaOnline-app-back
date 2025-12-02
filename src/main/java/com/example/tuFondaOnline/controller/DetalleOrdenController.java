@@ -78,6 +78,11 @@ public class DetalleOrdenController {
         return detalleOrdenService.findById(id);
     }
 
+    @GetMapping("/orden/{idOrden}")
+    public List<DetalleOrden> obtenerDetallesPorOrden(@PathVariable Long idOrden) {
+        return detalleOrdenService.findByOrdenId(idOrden);
+}
+
     @PostMapping
     @Operation(summary = "Crear un nuevo detalle de orden", description = "Crea un nuevo detalle de orden")
     @ApiResponses(value={

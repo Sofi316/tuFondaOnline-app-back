@@ -20,6 +20,9 @@ public class DetalleOrdenService {
     public List<DetalleOrden> findAll(){
         return detalleOrdenRepository.findAll();
     }
+    public List<DetalleOrden> findByOrdenId(Long idOrden) {
+    return detalleOrdenRepository.findByOrdenId(idOrden);
+}
 
     public DetalleOrden findById(Long id){
     return detalleOrdenRepository.findById(id)

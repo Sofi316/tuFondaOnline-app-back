@@ -38,24 +38,27 @@ public class UsuarioService {
         return usuarioRepository.findByEmail(email).orElse(null); 
     }
     public Usuario update(Long id, Usuario usuarioConDatosNuevos) {
-    // 1. Buscamos al usuario original en la base de datos
-    Usuario usuarioAntiguo = usuarioRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
-    
-    // 2. Actualizamos los datos (MENOS la contraseña y la fecha de registro)
-    usuarioAntiguo.setNombre(usuarioConDatosNuevos.getNombre());
-    usuarioAntiguo.setEmail(usuarioConDatosNuevos.getEmail());
-    usuarioAntiguo.setDireccion(usuarioConDatosNuevos.getDireccion());
-    usuarioAntiguo.setRut(usuarioConDatosNuevos.getRut());
-    
-    // Solo si eres el Admin podrías cambiar el rol o activo
-    if (usuarioConDatosNuevos.getRol() != null) {
-        usuarioAntiguo.setRol(usuarioConDatosNuevos.getRol());
-    }
-    if (usuarioConDatosNuevos.getActivo() != null) {
-        usuarioAntiguo.setActivo(usuarioConDatosNuevos.getActivo());
+        Usuario usuarioAntiguo = usuarioRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+        usuarioAntiguo.setNombre(usuarioConDatosNuevos.getNombre());
+        usuarioAntiguo.setEmail(usuarioConDatosNuevos.getEmail());
+        usuarioAntiguo.setDireccion(usuarioConDatosNuevos.getDireccion());
+        usuarioAntiguo.setRut(usuarioConDatosNuevos.getRut());
+
+        if (usuarioConDatosNuevos.getRol() != null) {
+            usuarioAntiguo.setRol(usuarioConDatosNuevos.getRol());
+        }
+        if (usuarioConDatosNuevos.getActivo() != null) {
+            usuarioAntiguo.setActivo(usuarioConDatosNuevos.getActivo());
+        }
+
+        if (usuarioConDatosNuevos.getPassword() != null 
+                && !usuarioConDatosNuevos.getPassword().isBlank()) {
+            usuarioAntiguo.setPassword(passwordEncoder.encode(usuarioConDatosNuevos.getPassword()));
+        }
+
+        return usuarioRepository.save(usuarioAntiguo);
     }
 
-    return usuarioRepository.save(usuarioAntiguo);
-}
 }
