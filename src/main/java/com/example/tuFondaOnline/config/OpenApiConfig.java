@@ -15,13 +15,12 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
         version = "1.0",
         description = "Documentación oficial de la API"
     ),
-    security = @SecurityRequirement(name = "bearerAuth")
+    security = @SecurityRequirement(name = "basicAuth")
 )
 @SecurityScheme(
-    name = "bearerAuth",
+    name = "basicAuth",
     type = SecuritySchemeType.HTTP,
-    scheme = "bearer",
-    bearerFormat = "JWT"
+    scheme = "basic"
 )
 public class OpenApiConfig {
 }

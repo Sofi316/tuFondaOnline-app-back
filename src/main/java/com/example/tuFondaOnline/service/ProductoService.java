@@ -44,13 +44,13 @@ public class ProductoService {
     public Producto save(Producto producto) {
 
         if (producto.getCategoria() == null 
-                || producto.getCategoria().getIdCategoria() == null) {
+                || producto.getCategoria().getId() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, 
                     "La categoría es requerida");
         }
 
-        Long categoriaId = producto.getCategoria().getIdCategoria();
+        Long categoriaId = producto.getCategoria().getId();
 
         // Obtener categoría real desde BD
         Categoria categoria = categoriaRepository.findById(categoriaId)

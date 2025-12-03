@@ -22,7 +22,7 @@ public class Publicacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_publicacion")
-    private Long idPublicacion;
+    private Long id;
     @Column(nullable=false, length=100)
     private String titulo;
     @Column(nullable=false, length=700)

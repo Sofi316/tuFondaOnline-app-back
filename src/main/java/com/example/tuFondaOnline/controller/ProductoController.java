@@ -73,7 +73,7 @@ public class ProductoController {
                             "  \"enOferta\": true,\n" +
                             "  \"precioOferta\": 2000,\n" +
                             "  \"categoria\": {\n" +
-                            "    \"idCategoria\": 2\n" +
+                            "    \"id\": 2\n" +
                             "  }\n" +
                             "}"
                 )
@@ -104,7 +104,7 @@ public class ProductoController {
                             "  \"enOferta\": false,\n" +
                             "  \"precioOferta\": null,\n" +
                             "  \"categoria\": {\n" +
-                            "    \"idCategoria\": 1\n" +
+                            "    \"id\": 1\n" +
                             "  }\n" +
                             "}"
                 )
