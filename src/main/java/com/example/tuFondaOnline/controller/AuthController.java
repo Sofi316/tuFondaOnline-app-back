@@ -1,6 +1,5 @@
 package com.example.tuFondaOnline.controller;
 
-import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.tuFondaOnline.dto.AuthResponse;
 import com.example.tuFondaOnline.dto.LoginRequest;
 import com.example.tuFondaOnline.model.Usuario;
-import com.example.tuFondaOnline.service.JwtService;
 import com.example.tuFondaOnline.service.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,18 +35,14 @@ public class AuthController {
     @Autowired
     private final UsuarioService usuarioService;
 
-    @Autowired
-    private final JwtService jwtService;
-
-    //Registrar usuario público
     @PostMapping("/register")
-    @Operation(summary = "Registrar nuevo usuario", description = "Crea un usuario y devuelve el token de acceso")
+    @Operation(summary = "Registrar nuevo usuario", description = "Crea un usuario")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Usuario registrado exitosamente", 
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
         @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario ya existe")
     })
-    public ResponseEntity<AuthResponse> register(
+    public ResponseEntity<Usuario> register(
         @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Datos del nuevo usuario",
             required = true,
@@ -58,35 +51,27 @@ public class AuthController {
                 schema = @Schema(implementation = Usuario.class),
                 examples = @ExampleObject(
                     name = "Ejemplo Cliente",
-                    value = "{\"nombre\": \"Cliente Nuevo\", \"email\": \"prueba@duoc.cl\", \"password\": \"1234\", \"rut\": \"16.666.333-4\", \"direccion\": \"Av. Siempre Viva 742\", \"activo\": true, \"fechaNac\": \"1998-05-20\", \"comuna\": {\"id\": 1}}"
+                    value = "{\"nombre\": \"Cliente Nuevo\", \"email\": \"prueba@duoc.cl\", \"password\": \"1234\", \"rut\": \"16.666.333-4\",\"direccion\": \"Av. Siempre Viva 742\", \"comuna\": {\"id\": 1}}"
                 )
             )
         )
         @RequestBody Usuario usuario) {
         
-        // Forzamos rol y fecha para seguridad
         usuario.setRol("CLIENTE");
-        usuario.setFechaRegistro(LocalDate.now());
 
-        
-        // Guardamos
         Usuario usuarioGuardado = usuarioService.save(usuario);
         
-        // Generamos token
-        String token = jwtService.generateToken(usuarioGuardado);
-        
-        // Devolvemos Token y Usuario completo (para el Frontend)
-        return ResponseEntity.ok(new AuthResponse(token, usuarioGuardado));
+        return ResponseEntity.ok(usuarioGuardado);
     }
-     //Login usuario 
+
     @PostMapping("/login")
-    @Operation(summary = "Iniciar sesión", description = "Autentica al usuario y devuelve un token JWT")
+    @Operation(summary = "Iniciar sesión", description = "Verifica credenciales y devuelve el usuario")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Login exitoso", 
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
         @ApiResponse(responseCode = "403", description = "Credenciales incorrectas")
     })
-    public ResponseEntity<AuthResponse> login(
+    public ResponseEntity<Usuario> login(
         @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Credenciales de acceso",
             required = true,
@@ -101,19 +86,12 @@ public class AuthController {
         )
         @RequestBody LoginRequest request) {
         
-        // 1. Autenticar (Si falla, lanza error aquí mismo)
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
-        // 2. Buscar al usuario 
-    
         Usuario usuarioReal = usuarioService.findByEmail(request.getEmail());
         
-        // 3. Generar Token
-        String token = jwtService.generateToken(usuarioReal);
-        
-        // 4. Devolver respuesta compuesta
-        return ResponseEntity.ok(new AuthResponse(token, usuarioReal));
+        return ResponseEntity.ok(usuarioReal);
     }
 }

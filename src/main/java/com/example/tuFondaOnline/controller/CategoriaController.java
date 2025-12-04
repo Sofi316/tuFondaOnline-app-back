@@ -97,11 +97,11 @@ public class CategoriaController {
                 schema = @Schema(implementation = Categoria.class),
                 examples = @ExampleObject(
                     name = "EjemploCategoriaActualizada",
-                    value = "{ \"nombre\": \"Postres\" }"                )
+                    value = "{ \"nombre\": \"Salados\" }"                )
             )
         )
         @RequestBody Categoria categoria){
-        categoria.setIdCategoria(id);
+        categoria.setId(id);
         return categoriaService.save(categoria);
     }
 

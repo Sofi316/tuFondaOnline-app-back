@@ -49,9 +49,6 @@ public class UsuarioService {
         if (usuarioConDatosNuevos.getRol() != null) {
             usuarioAntiguo.setRol(usuarioConDatosNuevos.getRol());
         }
-        if (usuarioConDatosNuevos.getActivo() != null) {
-            usuarioAntiguo.setActivo(usuarioConDatosNuevos.getActivo());
-        }
 
         if (usuarioConDatosNuevos.getPassword() != null 
                 && !usuarioConDatosNuevos.getPassword().isBlank()) {

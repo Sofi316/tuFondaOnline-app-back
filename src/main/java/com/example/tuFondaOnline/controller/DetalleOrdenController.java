@@ -54,11 +54,10 @@ public class DetalleOrdenController {
     })
     public List<DetalleOrden> listarDetalleOrden(Authentication authentication) {
         
-        boolean esJefe = authentication.getAuthorities().stream()
-            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR") || 
-                             rol.getAuthority().equals("VENDEDOR"));
+        boolean esAdmin = authentication.getAuthorities().stream()
+            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR"));
 
-        if (esJefe) {
+        if (esAdmin) {
             return detalleOrdenService.findAll();
         } else {
             String email = authentication.getName();
@@ -103,17 +102,16 @@ public class DetalleOrdenController {
             value = "{\"orden\": {\"id\": 1}, \"producto\": {\"id\": 2}, \"cantidad\": 3, \"precio\": 1500}")))
         @RequestBody DetalleOrden detalleOrden) {
         
-        // 1. Buscamos la Orden Completa (Para validar y para rellenar el JSON)
         Orden ordenObjetivo = ordenService.findById(detalleOrden.getOrden().getId());
-        detalleOrden.setOrden(ordenObjetivo); // Asignamos el objeto completo
+        detalleOrden.setOrden(ordenObjetivo);
 
-        // 2. Seguridad: Verificar dueño
-        boolean esJefe = authentication.getAuthorities().stream()
-            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR") || 
-                             rol.getAuthority().equals("VENDEDOR"));
+        //  Seguridad: Verificar admin
+        boolean esAdmin= authentication.getAuthorities().stream()
+            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR"));
 
-        if (!esJefe) {
+        if (!esAdmin) {
             String emailUsuario = authentication.getName();
+            // Si no es admin y la orden no es suya, error.
             if (ordenObjetivo != null && !ordenObjetivo.getUsuario().getEmail().equals(emailUsuario)) {
                 throw new RuntimeException("Acceso denegado: No puedes agregar productos a una orden ajena.");
             }

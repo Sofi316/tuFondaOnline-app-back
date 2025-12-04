@@ -41,11 +41,10 @@ public class OrdenController {
     @GetMapping
     @Operation(summary = "Listar ordenes", description = "Devuelve todas las ordenes si es Admin/Vendedor, o solo las propias si es Cliente")
     public List<Orden> listarOrdenes(Authentication authentication) {
-        boolean esJefe = authentication.getAuthorities().stream()
-            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR") || 
-                             rol.getAuthority().equals("VENDEDOR"));
+        boolean esAdmin = authentication.getAuthorities().stream()
+            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR"));
 
-        if (esJefe) {
+        if (esAdmin) {
             return ordenService.findAll();
         } else {
             String emailUsuario = authentication.getName();
@@ -91,11 +90,10 @@ public class OrdenController {
         )  
         @RequestBody Orden orden) {
         
-        boolean esJefe = authentication.getAuthorities().stream()
-            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR") || 
-                             rol.getAuthority().equals("VENDEDOR"));
+        boolean esAdmin = authentication.getAuthorities().stream()
+            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR"));
 
-        if (!esJefe) {
+        if (!esAdmin) {
             
             String emailUsuario = authentication.getName();
             Usuario usuarioReal = usuarioService.findByEmail(emailUsuario);

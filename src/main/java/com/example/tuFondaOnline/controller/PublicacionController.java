@@ -99,7 +99,7 @@ public class PublicacionController {
             )
         )
         @RequestBody Publicacion publicacion) {
-        publicacion.setIdPublicacion(id);
+        publicacion.setId(id);
         return publicacionService.save(publicacion);
     }
 

@@ -62,7 +62,7 @@ public class UsuarioController {
             schema = @Schema(implementation = Usuario.class),
             examples = @ExampleObject(
                 name = "Crear Vendedor",
-                value = "{\"nombre\": \"Juan Vendedor\", \"email\": \"vendedor2@duoc.cl\", \"password\": \"1234\", \"rol\": \"VENDEDOR\", \"rut\": \"12.345.678-9\", \"direccion\": \"Sucursal Norte\", \"activo\": true, \"fechaNac\": \"1990-01-01\", \"comuna\": {\"id\": 1}}"
+                value = "{\"nombre\": \"Juan Vendedor\", \"email\": \"vendedor2@duoc.cl\", \"password\": \"1234\", \"rol\": \"VENDEDOR\", \"rut\": \"12.345.678-9\", \"direccion\": \"Sucursal Norte\",\"comuna\": {\"id\": 1}}"
             ))) 
         @RequestBody Usuario usuario) {
         
@@ -85,7 +85,7 @@ public class UsuarioController {
             schema = @Schema(implementation = Usuario.class),
             examples = @ExampleObject(
                 name = "Editar Perfil",
-                value = "{\"nombre\": \"Juan Vendedor (Editado)\", \"email\": \"vendedor2@duoc.cl\", \"rol\": \"VENDEDOR\", \"rut\": \"12.345.678-9\", \"direccion\": \"Nueva Dirección 123\", \"activo\": true, \"fechaNac\": \"1990-01-01\", \"comuna\": {\"id\": 1}}"
+                value = "{\"nombre\": \"Juan Vendedor (Editado)\", \"email\": \"vendedor2@duoc.cl\", \"rol\": \"VENDEDOR\", \"rut\": \"12.345.678-9\", \"direccion\": \"Nueva Dirección 123\",\"comuna\": {\"id\": 1}}"
             ))) 
         @RequestBody Usuario usuario) {
         
