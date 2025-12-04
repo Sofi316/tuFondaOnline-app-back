@@ -1,12 +1,12 @@
 package com.example.tuFondaOnline.model;
 
-import java.util.Date;
-
+import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,6 +33,13 @@ public class Publicacion {
     private String imagen;
     @Column(nullable=false, length=700)
     private String contenido;
-    @Column(nullable=false)
-    private Date fecha;    
+    @Column(nullable=false, updatable = false)
+    private LocalDateTime fecha;    
+    
+    @PrePersist
+    public void fechaPublicacion() {
+       
+        this.fecha = LocalDateTime.now();
+        
+    }
 }

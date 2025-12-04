@@ -11,16 +11,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "categoria")
+@Table(name = "region")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Categoria {
+public class Region {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_categoria")
-    private Long idCategoria;
-    @Column(nullable=false, length=50)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id_region")
+    private Long id;
+
+    @Column(nullable = false, length=100)
     private String nombre;
+
 }

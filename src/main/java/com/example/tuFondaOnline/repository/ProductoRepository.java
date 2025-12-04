@@ -3,8 +3,9 @@ package com.example.tuFondaOnline.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.tuFondaOnline.model.Categoria;
+import com.example.tuFondaOnline.model.Producto;
+
 @Repository
-public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
+public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
 }
