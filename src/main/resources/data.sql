@@ -51,25 +51,25 @@ INSERT INTO categoria (nombre) VALUES
 
 INSERT INTO producto (nombre, descripcion, precio, stock, img, en_oferta, precio_oferta, id_categoria) VALUES
 -- Categoría 1: Plato con Carne
-('Choripán', 'Delicioso chorizo de Chillán asado a la parrilla dentro de un crujiente pan marraqueta.', 3000, 50, '/imagenes/productos/choripan.jpg', 0, NULL, 1),
-('Completo Italiano', 'Tradicional completo chileno con vienesa, palta fresca, tomate picado y mayonesa casera.', 3500, 40, '/imagenes/productos/completo.jpg', 0, NULL, 1),
-('Anticucho', 'Trozos jugosos de carne de vacuno, longaniza, cebolla y pimentón asados a la parrilla en brocheta.', 10000, 15, '/imagenes/productos/anticucho.jpg', 0, NULL, 1),
-('Pastel de Choclo', 'Clásico plato chileno con pino de carne, pollo, huevo duro y aceitunas, cubierto con pasta de choclo dulce.', 17000, 10, '/imagenes/productos/pastelchoclo.jpg', 0, NULL, 1),
-('Empanada de Pino', 'Masa rellena de carne picada, cebolla, aceitunas, pasas y huevo duro.', 5000, 30, '/imagenes/productos/empanada.jpg', 1, 4000, 1),
+('Choripán', 'Delicioso chorizo de Chillán asado a la parrilla dentro de un crujiente pan marraqueta.', 3000, 50, 'choripan', 0, NULL, 1),
+('Completo Italiano', 'Tradicional completo chileno con vienesa, palta fresca, tomate picado y mayonesa casera.', 3500, 40, 'completo', 0, NULL, 1),
+('Anticucho', 'Trozos jugosos de carne de vacuno, longaniza, cebolla y pimentón asados a la parrilla en brocheta.', 10000, 15, 'anticucho', 0, NULL, 1),
+('Pastel de Choclo', 'Clásico plato chileno con pino de carne, pollo, huevo duro y aceitunas, cubierto con pasta de choclo dulce.', 17000, 10, 'pastelchoclo', 0, NULL, 1),
+('Empanada de Pino', 'Masa rellena de carne picada, cebolla, aceitunas, pasas y huevo duro.', 5000, 30, 'empanada', 1, 4000, 1),
 
 -- Categoría 2: Plato sin carne
-('Choripán Vegano', 'Versión vegana del clásico choripán, con chorizo a base de plantas en pan marraqueta.', 3000, 20, '/imagenes/productos/choripanveg.jpg', 0, NULL, 2),
-('Completo Italiano Vegano', 'Completo italiano 100% vegano, con salchicha vegetal, palta, tomate y mayonesa vegana.', 3500, 18, '/imagenes/productos/completoveg.jpg', 0, NULL, 2),
-('Empanada Vegana', 'Empanada horneada rellena de un sabroso pino de champiñones, cebolla y especias.', 5000, 12, '/imagenes/productos/empanadaveg.jpg', 0, NULL, 2),
-('Empanada de Queso', 'Empanada frita rellena de abundante queso derretido.', 5000, 25, '/imagenes/productos/empanadaqueso.jpg', 0, NULL, 2),
-('Anticucho de Verduras', 'Brocheta de verduras de temporada (pimentón, cebolla, zapallo italiano, champiñón) asadas a la parrilla.', 8000, 8, '/imagenes/productos/anticuchoverdura.jpg', 0, NULL, 2),
-('Pastel de Choclo Vegano', 'Versión vegana del pastel de choclo, con pino a base de soya texturizada y verduras, cubierto de pasta de choclo.', 17000, 5, '/imagenes/productos/pastelchocloveg.jpg', 0, NULL, 2),
+('Choripán Vegano', 'Versión vegana del clásico choripán, con chorizo a base de plantas en pan marraqueta.', 3000, 20, 'choripanveg', 0, NULL, 2),
+('Completo Italiano Vegano', 'Completo italiano 100% vegano, con salchicha vegetal, palta, tomate y mayonesa vegana.', 3500, 18, 'completoveg', 0, NULL, 2),
+('Empanada Vegana', 'Empanada horneada rellena de un sabroso pino de champiñones, cebolla y especias.', 5000, 12, 'empanadaveg', 0, NULL, 2),
+('Empanada de Queso', 'Empanada frita rellena de abundante queso derretido.', 5000, 25, 'empanadaqueso', 0, NULL, 2),
+('Anticucho de Verduras', 'Brocheta de verduras de temporada (pimentón, cebolla, zapallo italiano, champiñón) asadas a la parrilla.', 8000, 8, 'anticuchoverdura', 0, NULL, 2),
+('Pastel de Choclo Vegano', 'Versión vegana del pastel de choclo, con pino a base de soya texturizada y verduras, cubierto de pasta de choclo.', 17000, 5, 'pastelchocloveg', 0, NULL, 2),
 
 -- Categoría 3: Bebestible
-('Terremoto para Niños', 'Versión sin alcohol del terremoto, preparada con helado de piña y granadina.', 3000, 80, '/imagenes/productos/terremotoniños.jpg', 0, NULL, 3),
-('Bebida Coca Cola', 'Clásica bebida Coca-Cola en formato lata o botella.', 2500, 200, '/imagenes/productos/coca-cola.jpg', 0, NULL, 3),
-('Agua', 'Agua mineral sin gas, botella de 500cc.', 1800, 150, '/imagenes/productos/agua.jpg', 0, NULL, 3),
-('Terremoto', 'Tradicional trago chileno con vino pipeño blanco, helado de piña y granadina.', 3500, 100, '/imagenes/productos/terremoto.jpg', 1, 3000, 3);
+('Terremoto para Niños', 'Versión sin alcohol del terremoto, preparada con helado de piña y granadina.', 3000, 80, 'terremotoninos', 0, NULL, 3),
+('Bebida Coca Cola', 'Clásica bebida Coca-Cola en formato lata o botella.', 2500, 200, 'cocacola', 0, NULL, 3),
+('Agua', 'Agua mineral sin gas, botella de 500cc.', 1800, 150, 'agua', 0, NULL, 3),
+('Terremoto', 'Tradicional trago chileno con vino pipeño blanco, helado de piña y granadina.', 3500, 100, 'terremoto', 1, 3000, 3);
 
 -- =================================================================
 -- 4. PUBLICACIONES (BLOG)
