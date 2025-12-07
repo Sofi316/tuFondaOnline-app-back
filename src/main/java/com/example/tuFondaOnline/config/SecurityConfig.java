@@ -57,6 +57,12 @@ public class SecurityConfig {
                     "/api/detalle_orden/orden/**"
                 ).hasAnyAuthority("ADMINISTRADOR", "CLIENTE")
 
+                 .requestMatchers(HttpMethod.POST, 
+                    "/api/ordenes/**", 
+                    "/api/detalle_orden/**",
+                    "/api/detalle_orden/orden/**"
+                ).hasAnyAuthority("ADMINISTRADOR", "CLIENTE")
+
                 .requestMatchers("/api/usuarios/**").hasAuthority("ADMINISTRADOR")
                 .requestMatchers(HttpMethod.POST,
                     "/api/productos/**",
