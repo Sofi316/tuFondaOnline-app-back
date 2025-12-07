@@ -3,15 +3,7 @@ package com.example.tuFondaOnline.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.tuFondaOnline.model.DetalleOrden;
 import com.example.tuFondaOnline.model.Orden;
@@ -44,7 +36,10 @@ public class DetalleOrdenController {
     private ProductoService productoService; 
 
     @GetMapping
-    @Operation(summary = "Obtener todos los detalles de orden", description = "Obtiene una lista de todos los detalles. Si es cliente, filtra solo los propios.")
+    @Operation(
+        summary = "Obtener todos los detalles de orden", 
+        description = "Obtiene una lista de todos los detalles"
+    )
     @ApiResponses(value={
         @ApiResponse(responseCode = "200",description = "Operación exitosa"),
         @ApiResponse(responseCode = "404",description = "Detalle de orden no encontrado",
@@ -52,17 +47,8 @@ public class DetalleOrdenController {
             schema = @Schema(implementation = DetalleOrden.class))
         )
     })
-    public List<DetalleOrden> listarDetalleOrden(Authentication authentication) {
-        
-        boolean esAdmin = authentication.getAuthorities().stream()
-            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR"));
-
-        if (esAdmin) {
-            return detalleOrdenService.findAll();
-        } else {
-            String email = authentication.getName();
-            return detalleOrdenService.findByUsuarioEmail(email);
-        }
+    public List<DetalleOrden> listarDetalleOrden() {
+        return detalleOrdenService.findAll();
     }
 
     @GetMapping("/{id}")
@@ -73,14 +59,17 @@ public class DetalleOrdenController {
                 schema = @Schema(implementation = DetalleOrden.class))),
         @ApiResponse(responseCode="404", description = "Detalle de orden no encontrado")
     })
-    public DetalleOrden obtenerDetalleOrdenPorId(@Parameter(description="ID del detalle a buscar", required=true) @PathVariable Long id) {
+    public DetalleOrden obtenerDetalleOrdenPorId(
+        @Parameter(description="ID del detalle a buscar", required=true) 
+        @PathVariable Long id
+    ) {
         return detalleOrdenService.findById(id);
     }
 
     @GetMapping("/orden/{idOrden}")
     public List<DetalleOrden> obtenerDetallesPorOrden(@PathVariable Long idOrden) {
         return detalleOrdenService.findByOrdenId(idOrden);
-}
+    }
 
     @PostMapping
     @Operation(summary = "Crear un nuevo detalle de orden", description = "Crea un nuevo detalle de orden")
@@ -90,36 +79,33 @@ public class DetalleOrdenController {
                 schema = @Schema(implementation = DetalleOrden.class)))
     })
     public DetalleOrden crearDetalleOrden(
-        Authentication authentication,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(
-        description = "Detalle de orden a crear",
-        required= true,
-        content = @Content(
-        mediaType = "application/json",
-        schema = @Schema(implementation = DetalleOrden.class),
-        examples = @ExampleObject(
-            name = "EjemploDetalleOrden",
-            value = "{\"orden\": {\"id\": 1}, \"producto\": {\"id\": 2}, \"cantidad\": 3, \"precio\": 1500}")))
-        @RequestBody DetalleOrden detalleOrden) {
+            description = "Detalle de orden a crear",
+            required= true,
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = DetalleOrden.class),
+                examples = @ExampleObject(
+                    name = "EjemploDetalleOrden",
+                    value = "{\"orden\": {\"id\": 1}, \"producto\": {\"id\": 2}, \"cantidad\": 3, \"precio\": 1500}"
+                )
+            )
+        )
+        @RequestBody DetalleOrden detalleOrden
+    ) {
         
+        if (detalleOrden.getOrden() == null || detalleOrden.getOrden().getId() == null) {
+            throw new RuntimeException("Falta el ID de la orden");
+        }
+        if (detalleOrden.getProducto() == null || detalleOrden.getProducto().getId() == null) {
+            throw new RuntimeException("Falta el ID del producto");
+        }
+
         Orden ordenObjetivo = ordenService.findById(detalleOrden.getOrden().getId());
         detalleOrden.setOrden(ordenObjetivo);
 
-        //  Seguridad: Verificar admin
-        boolean esAdmin= authentication.getAuthorities().stream()
-            .anyMatch(rol -> rol.getAuthority().equals("ADMINISTRADOR"));
-
-        if (!esAdmin) {
-            String emailUsuario = authentication.getName();
-            // Si no es admin y la orden no es suya, error.
-            if (ordenObjetivo != null && !ordenObjetivo.getUsuario().getEmail().equals(emailUsuario)) {
-                throw new RuntimeException("Acceso denegado: No puedes agregar productos a una orden ajena.");
-            }
-        }
-
-        // 3. Buscamos el Producto Completo 
         Producto productoReal = productoService.findById(detalleOrden.getProducto().getId());
-        detalleOrden.setProducto(productoReal); // Asignamos el objeto completo
+        detalleOrden.setProducto(productoReal);
 
         return detalleOrdenService.save(detalleOrden);
     }
@@ -132,18 +118,23 @@ public class DetalleOrdenController {
                 schema = @Schema(implementation = DetalleOrden.class))),
         @ApiResponse(responseCode="404", description = "Detalle de orden no encontrado")
     })
-    public DetalleOrden actualizarDetalleOrden(@Parameter(description="ID del detalle a actualizar",required=true)
-     @PathVariable Long id,
-     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-        description = "Detalle de orden a actualizar",
-        required= true,
-        content = @Content(
-        mediaType = "application/json",
-        schema = @Schema(implementation = DetalleOrden.class),
-        examples = @ExampleObject(
-            name = "EjemploDetalleOrden",
-            value = "{\"orden\": {\"id\": 1}, \"producto\": {\"id\": 2}, \"cantidad\": 4, \"precio\": 2000}"))) 
-     @RequestBody DetalleOrden detalleOrden) {
+    public DetalleOrden actualizarDetalleOrden(
+        @Parameter(description="ID del detalle a actualizar",required=true)
+        @PathVariable Long id,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Detalle de orden a actualizar",
+            required= true,
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = DetalleOrden.class),
+                examples = @ExampleObject(
+                    name = "EjemploDetalleOrden",
+                    value = "{\"orden\": {\"id\": 1}, \"producto\": {\"id\": 2}, \"cantidad\": 4, \"precio\": 2000}"
+                )
+            )
+        ) 
+        @RequestBody DetalleOrden detalleOrden
+    ) {
         
         detalleOrden.setId(id);
         
@@ -156,8 +147,10 @@ public class DetalleOrdenController {
         @ApiResponse(responseCode = "200",description = "Detalle de orden eliminado exitosamente"),
         @ApiResponse(responseCode = "404",description = "Detalle de orden no encontrado")
     })
-    public void eliminarDetalleOrden(@Parameter(description="ID del detalle a borrar",required=true)
-     @PathVariable Long id) {
+    public void eliminarDetalleOrden(
+        @Parameter(description="ID del detalle a borrar",required=true)
+        @PathVariable Long id
+    ) {
         detalleOrdenService.delete(id);
     }
 }

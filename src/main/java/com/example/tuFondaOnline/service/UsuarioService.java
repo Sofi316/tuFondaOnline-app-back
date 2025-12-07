@@ -1,18 +1,17 @@
 package com.example.tuFondaOnline.service;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.tuFondaOnline.model.Usuario;
 import com.example.tuFondaOnline.repository.UsuarioRepository;
 @Service
 public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public List<Usuario> findAll(){
         return usuarioRepository.findAll();
@@ -23,8 +22,6 @@ public class UsuarioService {
 
 
     public Usuario save(Usuario usuario){
-        String passwordEncriptada= passwordEncoder.encode(usuario.getPassword());
-        usuario.setPassword(passwordEncriptada);
         return usuarioRepository.save(usuario);
     }
     public void deleteById(Long id){
@@ -33,9 +30,8 @@ public class UsuarioService {
         }
         usuarioRepository.deleteById(id);
     }
-    public Usuario findByEmail(String email) {
-        
-        return usuarioRepository.findByEmail(email).orElse(null); 
+    public Optional<Usuario> findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
     public Usuario update(Long id, Usuario usuarioConDatosNuevos) {
         Usuario usuarioAntiguo = usuarioRepository.findById(id)
@@ -50,9 +46,8 @@ public class UsuarioService {
             usuarioAntiguo.setRol(usuarioConDatosNuevos.getRol());
         }
 
-        if (usuarioConDatosNuevos.getPassword() != null 
-                && !usuarioConDatosNuevos.getPassword().isBlank()) {
-            usuarioAntiguo.setPassword(passwordEncoder.encode(usuarioConDatosNuevos.getPassword()));
+        if (usuarioConDatosNuevos.getPassword() != null && !usuarioConDatosNuevos.getPassword().isBlank()) {
+            usuarioAntiguo.setPassword(usuarioConDatosNuevos.getPassword());
         }
 
         return usuarioRepository.save(usuarioAntiguo);
